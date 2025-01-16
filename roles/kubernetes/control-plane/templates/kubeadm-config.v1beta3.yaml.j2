@@ -94,9 +94,9 @@ dns:
   imageTag: {{ coredns_image_tag }}
 networking:
   dnsDomain: {{ dns_domain }}
-  serviceSubnet: "{{ [kube_service_addresses if not enable_ipv6only_stack_networks, kube_service_addresses_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+  serviceSubnet: "{{ kube_service_addresses_range }}"
 {% if kube_network_plugin is defined and kube_network_plugin not in ["kube-ovn"] %}
-  podSubnet: "{{ [kube_pods_subnet if not enable_ipv6only_stack_networks, kube_pods_subnet_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+  podSubnet: "{{ kube_pods_subnet_range }}"
 {% endif %}
 {% if kubeadm_feature_gates %}
 featureGates:
@@ -147,7 +147,7 @@ apiServer:
     etcd-servers-overrides: "/events#{{ etcd_events_access_addresses_semicolon }}"
 {% endif %}
     service-node-port-range: {{ kube_apiserver_node_port_range }}
-    service-cluster-ip-range: "{{ [kube_service_addresses if not enable_ipv6only_stack_networks, kube_service_addresses_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+    service-cluster-ip-range: "{{ kube_service_addresses_range }}"
     kubelet-preferred-address-types: "{{ kubelet_preferred_address_types }}"
     profiling: "{{ kube_profiling }}"
     request-timeout: "{{ kube_apiserver_request_timeout }}"
@@ -294,7 +294,7 @@ apiServer:
 {% endif %}
   certSANs:
 {% for san in apiserver_sans %}
-  - "{{ san }}"
+  - {{ san }}
 {% endfor %}
   timeoutForControlPlane: 5m0s
 controllerManager:
@@ -302,9 +302,9 @@ controllerManager:
     node-monitor-grace-period: {{ kube_controller_node_monitor_grace_period }}
     node-monitor-period: {{ kube_controller_node_monitor_period }}
 {% if kube_network_plugin is defined and kube_network_plugin not in ["kube-ovn"] %}
-    cluster-cidr: "{{ [kube_pods_subnet if not enable_ipv6only_stack_networks, kube_pods_subnet_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+    cluster-cidr: "{{ kube_pods_subnet_range }}"
 {% endif %}
-    service-cluster-ip-range: "{{ [kube_service_addresses if not enable_ipv6only_stack_networks, kube_service_addresses_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+    service-cluster-ip-range: "{{ kube_service_addresses_range }}"
 {% if kube_network_plugin is defined and kube_network_plugin == "calico" and not calico_ipam_host_local %}
     allocate-node-cidrs: "false"
 {% elif enable_ipv6only_stack_networks %}
@@ -392,7 +392,7 @@ clientConnection:
   kubeconfig: {{ kube_proxy_client_kubeconfig }}
   qps: {{ kube_proxy_client_qps }}
 {% if kube_network_plugin is defined and kube_network_plugin not in ["kube-ovn"] %}
-clusterCIDR: "{{ [kube_pods_subnet if not enable_ipv6only_stack_networks, kube_pods_subnet_ipv6 if (enable_dual_stack_networks or enable_ipv6only_stack_networks)] | reject('match', '^$') | join(',') }}{{ '' }}"
+clusterCIDR: "{{ kube_pods_subnet_range }}"
 {% endif %}
 configSyncPeriod: {{ kube_proxy_config_sync_period }}
 conntrack:
