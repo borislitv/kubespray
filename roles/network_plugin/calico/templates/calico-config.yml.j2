@@ -60,7 +60,7 @@ data:
               "assign_ipv6": "true"
               {% elif enable_dual_stack_networks %}
               "assign_ipv6": "true",
-              {%   endif %}
+              {% endif %}
               {% if not enable_ipv6only_stack_networks %}
               "assign_ipv4": "true"
               {% endif %}
