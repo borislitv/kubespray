@@ -120,7 +120,7 @@ kubernetesVersion: {{ kube_version }}
 {% if kubeadm_config_api_fqdn is defined %}
 controlPlaneEndpoint: {{ kubeadm_config_api_fqdn }}:{{ loadbalancer_apiserver.port | default(kube_apiserver_port) }}
 {% else %}
-controlPlaneEndpoint: {{ ip | default(fallback_ip) }}:{{ kube_apiserver_port }}
+controlPlaneEndpoint: "{{ lookup('ansible.builtin.vars', 'ip' + default_net_mode, default=hostvars[inventory_hostname]['fallback_ip' + default_net_mode]) | ansible.utils.ipwrap }}:{{ kube_apiserver_port }}"
 {% endif %}
 certificatesDir: {{ kube_cert_dir }}
 imageRepository: {{ kube_image_repo }}

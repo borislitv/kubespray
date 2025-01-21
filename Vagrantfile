@@ -210,10 +210,11 @@ Vagrant.configure("2") do |config|
       end
 
       ip = "#{$subnet}.#{i+100}"
+      ip6 = "#{$subnet_ipv6}::#{i+100}"
       node.vm.network :private_network,
         :ip => ip,
         :libvirt__guest_ipv6 => 'yes',
-        :libvirt__ipv6_address => "#{$subnet_ipv6}::#{i+100}",
+        :libvirt__ipv6_address => ip6,
         :libvirt__ipv6_prefix => "64",
         :libvirt__forward_mode => "none",
         :libvirt__dhcp_enabled => false
@@ -222,7 +223,7 @@ Vagrant.configure("2") do |config|
       node.vm.provision "shell", inline: "swapoff -a"
 
       # ubuntu2004 and ubuntu2204 have IPv6 explicitly disabled. This undoes that.
-      if ["ubuntu2004", "ubuntu2204"].include? $os
+      if ["ubuntu2004", "ubuntu2204", "ubuntu2404"].include? $os
         node.vm.provision "shell", inline: "rm -f /etc/modprobe.d/local.conf"
         node.vm.provision "shell", inline: "sed -i '/net.ipv6.conf.all.disable_ipv6/d' /etc/sysctl.d/99-sysctl.conf /etc/sysctl.conf"
       end
@@ -250,6 +251,7 @@ Vagrant.configure("2") do |config|
 
       host_vars[vm_name] = {
         "ip": ip,
+        "ip6": ip6,
         "flannel_interface": "eth1",
         "kube_network_plugin": $network_plugin,
         "kube_network_plugin_multus": $multi_networking,
