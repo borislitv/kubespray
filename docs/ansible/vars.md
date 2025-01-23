@@ -38,8 +38,11 @@ Some variables of note include:
 * *access_ip* - IP to use from other hosts to connect to this host. Often required when deploying
   from a cloud, such as OpenStack or GCE and you have separate public/floating and private IPs.
   This would **usually** be the private ip.
+* *access_ip6* - IPv6 to use from other hosts to connect to this host.
 * *ansible_default_ipv4.address* - Not Kubespray-specific, but it is used if ip
   and access_ip are undefined
+* *ansible_default_ipv6.address* - Not Kubespray-specific, but it is used if ip
+  and access_ip6 are undefined
 * *ip6* - IPv6 address to use for binding services. (host var)
   If *enable_dual_stack_networks* is set to ``true`` and *ip6* is defined,
   kubelet's ``--node-ip`` and node's ``InternalIP`` will be the combination of *ip* and *ip6*.

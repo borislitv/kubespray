@@ -219,11 +219,16 @@ Vagrant.configure("2") do |config|
         :libvirt__forward_mode => "none",
         :libvirt__dhcp_enabled => false
 
+      # libvirt__ipv6_address does not work as intended, the address is obtained with the desired prefix, but auto-generated(like fd3c:b398:698:756:5054:ff:fe48:c61e/64)
+      # add default route for detect ansible_default_ipv6
+      # TODO: fix libvirt__ipv6 or use $subnet in shell
+      config.vm.provision "shell", inline: "ip -6 r a fd3c:b398:698:756::/64 dev eth1;ip -6 r add default via fd3c:b398:0698:0756::1 dev eth1 || true"
+
       # Disable swap for each vm
       node.vm.provision "shell", inline: "swapoff -a"
 
       # ubuntu2004 and ubuntu2204 have IPv6 explicitly disabled. This undoes that.
-      if ["ubuntu2004", "ubuntu2204", "ubuntu2404"].include? $os
+      if ["ubuntu2004", "ubuntu2204"].include? $os
         node.vm.provision "shell", inline: "rm -f /etc/modprobe.d/local.conf"
         node.vm.provision "shell", inline: "sed -i '/net.ipv6.conf.all.disable_ipv6/d' /etc/sysctl.d/99-sysctl.conf /etc/sysctl.conf"
       end
@@ -251,7 +256,6 @@ Vagrant.configure("2") do |config|
 
       host_vars[vm_name] = {
         "ip": ip,
-        "ip6": ip6,
         "flannel_interface": "eth1",
         "kube_network_plugin": $network_plugin,
         "kube_network_plugin_multus": $multi_networking,

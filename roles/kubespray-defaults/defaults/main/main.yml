@@ -639,7 +639,7 @@ ssl_ca_dirs: |-
 # Vars for pointing to kubernetes api endpoints
 kube_apiserver_count: "{{ groups['kube_control_plane'] | length }}"
 kube_apiserver_address: "{{ lookup('ansible.builtin.vars', 'ip' + default_net_mode, default=hostvars[inventory_hostname]['fallback_ip' + default_net_mode]) }}"
-kube_apiserver_access_address: "{{ access_ip | default(kube_apiserver_address) }}"
+kube_apiserver_access_address: "{{ lookup('ansible.builtin.vars', 'access_ip' + default_net_mode, default=kube_apiserver_address) }}"
 first_kube_control_plane_address: "{{ hostvars[groups['kube_control_plane'][0]]['access_ip' + default_net_mode] | default(hostvars[groups['kube_control_plane'][0]]['ip' + default_net_mode] | default(hostvars[groups['kube_control_plane'][0]]['fallback_ip' + default_net_mode])) | ansible.utils.ipwrap }}"
 loadbalancer_apiserver_localhost: "{{ loadbalancer_apiserver is not defined }}"
 loadbalancer_apiserver_type: "nginx"
