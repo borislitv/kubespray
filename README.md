@@ -96,7 +96,7 @@ Note:
 
 ## Supported Components
 
-[//]: # BEGIN ANSIBLE MANAGED BLOCK
+<!-- BEGIN ANSIBLE MANAGED BLOCK -->
 
 - Core
   - [kubernetes](https://github.com/kubernetes/kubernetes) v1.32.0
@@ -118,7 +118,6 @@ Note:
   - [cert-manager](https://github.com/jetstack/cert-manager) v1.15.3
   - [coredns](https://github.com/coredns/coredns) v1.11.3
   - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.12.0
-  - [krew](https://github.com/kubernetes-sigs/krew) v0.4.4
   - [argocd](https://argoproj.github.io/) v2.11.0
   - [helm](https://helm.sh/) v3.16.4
   - [metallb](https://metallb.universe.tf/)  v0.13.9
@@ -134,7 +133,7 @@ Note:
   - [local-volume-provisioner](https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner) v2.5.0
   - [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) v0.16.4
 
-[//]: # END ANSIBLE MANAGED BLOCK
+<!-- END ANSIBLE MANAGED BLOCK -->
 
 ## Container Runtime Notes
 
