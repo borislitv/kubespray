@@ -75,6 +75,17 @@ oom_score = {{ containerd_oom_score }}
     sandbox = "{{ pod_infra_image_repo }}:{{ pod_infra_image_tag }}"
   [plugins."io.containerd.cri.v1.images".registry]
     config_path = "{{ containerd_cfg_dir }}/certs.d"
+{% for registry in containerd_registry_auth if registry['registry'] is defined %}
+{% if (registry['username'] is defined and registry['password'] is defined) or registry['auth'] is defined %}
+      [plugins."io.containerd.cri.v1.images".registry.configs."{{ registry['registry'] }}".auth]
+{% if registry['username'] is defined and registry['password'] is defined %}
+        password = "{{ registry['password'] }}"
+        username = "{{ registry['username'] }}"
+{% else %}
+        auth = "{{ registry['auth'] }}"
+{% endif %}
+{% endif %}
+{% endfor %}
 
 {% if nri_enabled %}
   [plugins."io.containerd.nri.v1.nri"]
